@@ -30,8 +30,8 @@ class RandomMonster {
 	
 	String nameGenerator() {
 		String first[] = {"Death", "Evil", "Wispy", "Suspicious", "Crazy", "Ancient", "Crafty", "Devious", "Spooky", "Senile"};
-		String second[] = {" Goblin", " Cobal", " Ogre", " Orc", " Shade", " Baby Dragon", " Drake", " Air Elemental", " Water Elemental", " Earth Elemental", " Fire Elemental"};
-		String third[] = {" Slave", " Soldier", " Alchemist", " Miner", " Mage", " Necromancer", ""};
+		String second[] = {" Goblin", " Cobal", " Ogre", " Orc", " Shade", " Baby Dragon", " Drake", " Air", " Water", " Earth", " Fire"};
+		String third[] = {" Slave", " Soldier", " Alchemist", " Miner", " Mage", " Necromancer", "", " Elemental"};
 		
 		int one = (int) (Math.random() * first.length);
 		int two = (int) (Math.random() * second.length);
@@ -141,28 +141,10 @@ public class RPGmain {
 		System.out.println("");
 		System.out.println("1. Start temp battle test");
 		System.out.println("2. Exit");
-		readline =  "1";//in.readLine();
+		readline = in.readLine();
 		
 		if (readline.equals("1")) {
 			Gamemethods.Battle(Monster1, player);
-			/*boolean end = false;
-			while(end == false) {
-				System.out.println("player health: " + player.health + "       " +  Monster1.name + " Health: " + Monster1.health);
-				Gamemethods.attack(player.attack(), player.health, Monster1.attack(), Monster1.health);
-				Monster1.health = Gamemethods.getMhp();
-				player.health = Gamemethods.getPhp();
-				if (Monster1.health <= 0) {
-					end = true;
-				}
-				else{
-					System.out.println("player health: " + player.health + "       " +  Monster1.name + " Health: " + Monster1.health);
-					System.out.println("Do you want to continue attacking?");
-					readline = in.readLine();
-					if (readline.equals("no") || readline.equals("N") || readline.equals("No")) {
-						end = true;
-					}
-				}
-			}*/
 		}
 		
 		
@@ -183,6 +165,6 @@ public class RPGmain {
 		 */
 		
 
+		
 	}
-
 }
