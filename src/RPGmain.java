@@ -6,10 +6,9 @@ import java.util.Calendar;
 
 
 
-
 class Player{
 	String name;
-	int inventory[];
+	int[] inventory = new int[10];
 	int health;
 	int attack;
 	//int dexterity;
@@ -20,6 +19,7 @@ class Player{
 		hit = (int) ((Math.random() * 60) + attack);
 		return hit;
 	}
+	
 }
 
 class RandomMonster {
@@ -28,25 +28,96 @@ class RandomMonster {
 	int attack;
 	int hit;
 	
-	String nameGenerator() {
+	String statAndNameGenerator() {
 		String first[] = {"Death", "Evil", "Wispy", "Suspicious", "Crazy", "Ancient", "Crafty", "Devious", "Spooky", "Senile"};
-		String second[] = {" Goblin", " Cobal", " Ogre", " Orc", " Shade", " Baby Dragon", " Drake", " Air", " Water", " Earth", " Fire"};
-		String third[] = {" Slave", " Soldier", " Alchemist", " Miner", " Mage", " Necromancer", "", " Elemental"};
+		String second[] = {" Goblin", " Cobal", " Ogre", " Orc", " Shade", " Baby Dragon", " Drake", " Skeleton"};
+		String third[] = {" Slave", " Soldier", " Alchemist", " Miner", " Mage", " Necromancer", ""};
 		
 		int one = (int) (Math.random() * first.length);
 		int two = (int) (Math.random() * second.length);
 		int three = (int) (Math.random() * third.length);
 		
 		String randname = (first[one] + second[two] + third[three]);
+		switch (one) {
+			case 0:
+				attack = 60;
+				break;
+			case 1:
+				attack = 50;
+				break;
+			case 2:
+				attack = 30;
+				break;
+			case 3:
+				attack = 40;
+				break;
+			case 4:
+				attack = 20;
+				break;
+			case 5:
+				attack = 40;
+				break;
+			case 6:
+				attack = 30;
+				break;
+			case 7:
+				attack = 50;
+				break;
+			case 8:
+				attack = 40;
+				break;
+			case 9:
+				attack = 10;
+				break;
+			default:
+				System.out.println("ERM... somethings wrong here");
+				break;
+		}
+		
+		switch (two) { //" Goblin", " Cobal", " Ogre", " Orc", " Shade", " Baby Dragon", " Drake", " Skeleton"
+			case 0:
+				health = 80;
+				break;
+			case 1:
+				health = 70;
+				break;
+			case 2:
+				health = 150;
+				break;
+			case 3:
+				health = 130;
+				break;
+			case 4:
+				health = 80;
+				attack = attack + 20;
+				break;
+			case 5:
+				health = 190;
+				attack = attack - 10;
+				break;
+			case 6:
+				health = 160;
+				break;
+			case 7:
+				health = 90;
+				attack = attack + 10;
+				break;
+			default:
+				System.out.println("ERM... somethings wrong here");
+				break;
+				
+		}
+		
+		//switch (three) {
+			
+		//}
+		
 		return randname;
 		
 	}
 	
 	RandomMonster() {
-		name = nameGenerator();
-		health = (int) ((Math.random() * 120 ) + 3);
-		attack = (int) ((Math.random() * 40) + 1);
-		
+		name = statAndNameGenerator();		
 	}
 	
 	int attack(){
@@ -68,7 +139,8 @@ class GameMethods {
 	    }
 	    while (t1-t0<1000);
 	}
-	void Battle (RandomMonster Monster1, Player player) throws IOException {
+	void Battle (Player player) throws IOException {
+		RandomMonster Monster1 = new RandomMonster();
 		BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
 		String readline;
 		boolean end = false;
@@ -77,7 +149,7 @@ class GameMethods {
 			attack(player.attack(), player.health, Monster1.attack(), Monster1.health);
 			Monster1.health = getMhp();
 			player.health = getPhp();
-			if (Monster1.health <= 0) {
+			if (Monster1.health <= 0 || player.health <= 0) {
 				end = true;
 			}
 			else{
@@ -100,12 +172,15 @@ class GameMethods {
 			System.out.println("The monster is dead!");
 		}
 		else {
-		System.out.println("The monster attacks back!");
-		wait(6);
-		int phpb = php;
-		php = php - matt;
-		System.out.println("He hits you for " + (phpb - php) + "HP");
-		wait(6);
+			System.out.println("The monster attacks back!");
+			wait(6);
+			int phpb = php;
+			php = php - matt;
+			System.out.println("He hits you for " + (phpb - php) + "HP");
+			wait(6);
+			if (php <= 0) {
+				System.out.println("you are dead!");
+			}
 		}
 		rphp = php;
 		rmhp = mhp;
@@ -131,12 +206,10 @@ public class RPGmain {
 		GameMethods Gamemethods = new GameMethods();
 		
 		Player player = new Player();
-		player.name = "Jacob";
-		player.attack = 4;
 		player.health = 100;
-		
-		RandomMonster Monster1 = new RandomMonster();
-		System.out.println(Monster1.name);
+		player.attack = 40;
+		player.inventory[0] = 1;
+     	player.openInventory();
 		System.out.println("Start Screen");
 		System.out.println("");
 		System.out.println("1. Start temp battle test");
@@ -144,7 +217,16 @@ public class RPGmain {
 		readline = in.readLine();
 		
 		if (readline.equals("1")) {
-			Gamemethods.Battle(Monster1, player);
+			System.out.print("What is your name?: ");
+			player.name = in.readLine();
+			System.out.println("");
+			System.out.println("Hello " + player.name);
+			System.out.println("Are you ready to enter the battle?");
+			readline = in.readLine();
+			if(readline.equals("yes")) {
+				Gamemethods.Battle(player);
+			}
+			
 		}
 		
 		
