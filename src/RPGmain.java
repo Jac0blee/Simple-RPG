@@ -5,28 +5,83 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
-
 class Player{
 	String name;
 	int[] inventory = new int[10];
-	int health;
-	int attack;
+	private int health;
+	private int healthmax;
+	private int attack;
+	private int money;
 	//int dexterity;
 	//int wisdom;
-	int hit;
+	private int hit;
+	
+	//setters
+	
+	void setHealth(int hp) {
+		health = hp;
+	}
+	void setHealthMax(int hm) {
+		healthmax = hm;
+	}
+	void setAttack(int att) {
+		attack = att;
+	}
+	void setMoney(int mn) {
+		money = mn;
+	}
+	void setHit(int ht) {
+		hit = ht;
+	}
+	
+	//getters
+	
+	int getHealth() {
+		return health;
+	}
+	int getHealthMax() {
+		return healthmax;
+	}
+	int getAttack() {
+		return attack;
+	}
+	int getMoney() {
+		return money;
+	}
+	int getHit() {
+		return hit;
+	}
 	
 	int attack(){
 		hit = (int) ((Math.random() * 60) + attack);
 		return hit;
 	}
+	void heal() {
+		if (health == healthmax) {
+			System.out.println("You are already healed.");
+		}
+		else {
+			int cost = (healthmax - health) / 5;
+			
+			if (money >= cost) {
+				health = healthmax;
+				money = money - cost;
+			}
+			else {
+				System.out.println("You dont have enough money to heal to your max health.");
+			}
+		}
+	}
 	
 }
 
+
+
 class RandomMonster {
 	String name;
-	int health;
-	int attack;
-	int hit;
+	private int health;
+	private int attack;
+	private int hit;
 	
 	String statAndNameGenerator() {
 		String first[] = {"Death", "Evil", "Wispy", "Suspicious", "Crazy", "Ancient", "Crafty", "Devious", "Spooky", "Senile"};
@@ -74,7 +129,7 @@ class RandomMonster {
 				break;
 		}
 		
-		switch (two) { //" Goblin", " Cobal", " Ogre", " Orc", " Shade", " Baby Dragon", " Drake", " Skeleton"
+		switch (two) { 
 			case 0:
 				health = 80;
 				break;
@@ -108,13 +163,65 @@ class RandomMonster {
 				
 		}
 		
-		//switch (three) {
-			
-		//}
+		/*switch (three) {
+			case 0:
+				health = 80;
+				break;
+			case 1:
+				health = 70;
+				break;
+			case 2:
+				health = 150;
+				break;
+			case 3:
+				health = 130;
+				break;
+			case 4:
+				health = 80;
+				attack = attack + 20;
+				break;
+			case 5:
+				health = 190;
+				attack = attack - 10;
+				break;
+			default:
+				System.out.println("ERM... somethings wrong here");
+				break;
+		}*/
 		
 		return randname;
 		
 	}
+	
+	//Setters:
+	public void setHealth(int hp) {
+		health = hp;
+	}
+	public void setAttack(int att) {
+		attack = att;
+	}
+	public void setHit(int ht) {
+		hit = ht;
+	}
+	public void setName(String nm) {
+		name = nm;
+	}
+	
+	//Getters:
+	public int getHealth() {
+		return health;
+	}
+	public int getAttack() {
+		return attack;
+	}
+	public int getHit() {
+		return hit;
+	}
+	public String getName() {
+		return name;
+	}
+	
+	//Normal methods:
 	
 	RandomMonster() {
 		name = statAndNameGenerator();		
@@ -127,9 +234,12 @@ class RandomMonster {
 	
 }
 
+
+
 class GameMethods {
 	int rphp;
 	int rmhp;
+	RandomMonster LMB;
 	
 	public static void wait (int n) {
 	    long t0,t1;
@@ -140,20 +250,21 @@ class GameMethods {
 	    while (t1-t0<1000);
 	}
 	void Battle (Player player) throws IOException {
-		RandomMonster Monster1 = new RandomMonster();
+		RandomMonster LMB = new RandomMonster();
+		
 		BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
 		String readline;
 		boolean end = false;
 		while(end == false) {
-			System.out.println("player health: " + player.health + "       " +  Monster1.name + " Health: " + Monster1.health);
-			attack(player.attack(), player.health, Monster1.attack(), Monster1.health);
-			Monster1.health = getMhp();
-			player.health = getPhp();
-			if (Monster1.health <= 0 || player.health <= 0) {
+			System.out.println("player health: " + player.getHealth() + "/" + player.getHealthMax() + "       " +  LMB.name + " Health: " + LMB.getHealth());
+			attack(player, LMB);
+			//LMB.setHealth(getMhp());
+			//player.setHealth(getPhp());
+			if (LMB.getHealth() <= 0 || player.getHealth() <= 0) {
 				end = true;
 			}
 			else{
-				System.out.println("player health: " + player.health + "       " +  Monster1.name + " Health: " + Monster1.health);
+				System.out.println("player health: " + player.getHealth() + "/" + player.getHealthMax() + "       " +  LMB.name + " Health: " + LMB.getHealth());
 				System.out.println("Do you want to continue attacking?");
 				readline = bufferRead.readLine();
 				if (readline.equals("no") || readline.equals("N") || readline.equals("No")) {
@@ -162,54 +273,44 @@ class GameMethods {
 			}
 		}
 	}
-	void attack(int patt,int php,int matt,int mhp ) {
+	void attack(Player player, RandomMonster monster ) {
 		System.out.println("Attacking!");
-		int mhpb = mhp;
-		mhp = mhp - patt;
+		int mhpb = monster.getHealth();
+		monster.setHealth(monster.getHealth() - player.attack());
 		wait(6);
-		System.out.println("You hit him for " + (mhpb - mhp) + "HP");
-		if (mhp <= 0) {
+		System.out.println("You hit him for " + (mhpb - monster.getHealth()) + "HP");
+		if (monster.getHealth() <= 0) {
 			System.out.println("The monster is dead!");
 		}
 		else {
 			System.out.println("The monster attacks back!");
 			wait(6);
-			int phpb = php;
-			php = php - matt;
-			System.out.println("He hits you for " + (phpb - php) + "HP");
+			int phpb = player.getHealth();
+			player.setHealth(player.getHealth() - monster.attack());
+			System.out.println("He hits you for " + (phpb - player.getHealth()) + "HP");
 			wait(6);
-			if (php <= 0) {
+			if (player.getHealth() <= 0) {
 				System.out.println("you are dead!");
 			}
 		}
-		rphp = php;
-		rmhp = mhp;
-		
 	}
-	public int getPhp() {
-		return rphp;
-	}
-	public int getMhp() {
-		return rmhp;
-	}
-	
-
-
 }
+
+
 
 public class RPGmain {
 
 	public static void main(String[] args) throws IOException{
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String readline;
+		boolean end = false;
 		
 		GameMethods Gamemethods = new GameMethods();
-		
 		Player player = new Player();
-		player.health = 100;
-		player.attack = 40;
+		player.setHealth(100);
+		player.setHealthMax(player.getHealth());
+		player.setAttack(70);
 		player.inventory[0] = 1;
-     	player.openInventory();
 		System.out.println("Start Screen");
 		System.out.println("");
 		System.out.println("1. Start temp battle test");
@@ -224,9 +325,32 @@ public class RPGmain {
 			System.out.println("Are you ready to enter the battle?");
 			readline = in.readLine();
 			if(readline.equals("yes")) {
-				Gamemethods.Battle(player);
+				while (end == false) {
+					Gamemethods.Battle(player);
+					System.out.println("That was a crazy Battle you had out there");
+					System.out.println("Would you like to heal yourself?");
+					readline = in.readLine();
+					if (readline.equals("yes") || readline.equals("y") || readline.equals("Yes")) {
+						player.heal();					
+					}
+					else{
+						if (player.getHealth() <= player.getHealth() / 2) {
+							System.out.println("Are you sure? You look pretty beat up...");
+						}
+						else {
+							System.out.println("Okay bye!");
+						}
+					}
+					System.out.println("Would you like to battle again");
+					readline = in.readLine();
+					if(readline.equals("no") || readline.equals("n") || readline.equals("No")) {
+						end = true;
+					}
+				}
 			}
-			
+			else if(readline.equals("no") || readline.equals("n") || readline.equals("No")) {
+				System.out.println("Okay bye!");
+			}
 		}
 		
 		
@@ -247,6 +371,6 @@ public class RPGmain {
 		 */
 		
 
-		
+			}	
 	}
-}
+
